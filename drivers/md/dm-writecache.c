@@ -142,6 +142,7 @@ struct dm_writecache {
 	size_t metadata_sectors;
 	size_t n_blocks;
 	uint64_t seq_count;
+	sector_t data_device_sectors;
 	void *block_start;
 	struct wc_entry *entries;
 	unsigned block_size;
@@ -893,8 +894,20 @@ static void writecache_resume(struct dm_target *ti)
 
 	wc_lock(wc);
 
-	if (WC_MODE_PMEM(wc))
+	wc->data_device_sectors = i_size_read(wc->dev->bdev->bd_inode) >> SECTOR_SHIFT;
+
+	if (WC_MODE_PMEM(wc)) {
 		persistent_memory_invalidate_cache(wc->memory_map, wc->memory_map_size);
+	} else {
+		r = writecache_read_metadata(wc, wc->metadata_sectors);
+		if (r) {
+			size_t sb_entries_offset;
+			writecache_error(wc, r, "unable to read metadata: %d", r);
+			sb_entries_offset = offsetof(struct wc_memory_superblock, entries);
+			memset((char *)wc->memory_map + sb_entries_offset, -1,
+			       (wc->metadata_sectors << SECTOR_SHIFT) - sb_entries_offset);
+		}
+	}
 
 	wc->tree = RB_ROOT;
 	INIT_LIST_HEAD(&wc->lru);
@@ -1452,6 +1465,10 @@ static bool wc_add_block(struct writeback_struct *wb, struct wc_entry *e, gfp_t 
 	void *address = memory_data(wc, e);
 
 	persistent_memory_flush_cache(address, block_size);
+
+	if (unlikely(bio_end_sector(&wb->bio) >= wc->data_device_sectors))
+		return true;
+
 	return bio_add_page(&wb->bio, persistent_memory_page(address),
 			    block_size, persistent_memory_page_offset(address)) != 0;
 }
@@ -1524,6 +1541,9 @@ static void __writecache_writeback_pmem(struct dm_writecache *wc, struct writeba
 		if (writecache_has_error(wc)) {
 			bio->bi_status = BLK_STS_IOERR;
 			bio_endio(&wb->bio);
+		} else if (unlikely(!bio_sectors(&wb->bio))) {
+			bio->bi_status = BLK_STS_OK;
+			bio_endio(&wb->bio);
 		} else {
 			submit_bio(&wb->bio);
 		}
@@ -1565,6 +1585,14 @@ static void __writecache_writeback_ssd(struct dm_writecache *wc, struct writebac
 			BUG_ON(f != e + 1);
 			list_del(&f->lru);
 			e = f;
+		}
+
+		if (unlikely(to.sector + to.count > wc->data_device_sectors)) {
+			if (to.sector >= wc->data_device_sectors) {
+				writecache_copy_endio(0, 0, c);
+				continue;
+			}
+			from.count = to.count = wc->data_device_sectors - to.sector;
 		}
 
 		dm_kcopyd_copy(wc->dm_kcopyd, &from, 1, &to, 0, writecache_copy_endio, c);
