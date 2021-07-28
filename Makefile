@@ -2,7 +2,7 @@
 # Version Based only on Kernel.org + Android Common Kernel
 VERSION = 4
 PATCHLEVEL = 19
-SUBLEVEL = 198
+SUBLEVEL = 199
 EXTRAVERSION =
 NAME = "People's Front"
 
