@@ -687,7 +687,7 @@ int device_links_check_suppliers(struct device *dev)
 		// 	continue;
 
 		if (!(link->flags & DL_FLAG_MANAGED))
-		if (link->flags & DL_FLAG_STATELESS
+		if (link->flags & DL_FLAG_STATELESS)
 			continue;
 
 		if (link->status != DL_STATE_AVAILABLE) {
@@ -1090,7 +1090,7 @@ void device_links_unbind_consumers(struct device *dev)
 		// 	continue;
 
 		if (!(link->flags & DL_FLAG_MANAGED))
-		if (link->flags & DL_FLAG_STATELESS ||
+		if (link->flags & DL_FLAG_STATELESS)
 			continue;
 
 
