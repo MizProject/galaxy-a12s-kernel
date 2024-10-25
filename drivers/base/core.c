@@ -120,8 +120,8 @@ static int device_is_dependent(struct device *dev, void *target)
 		return ret;
 
 	list_for_each_entry(link, &dev->links.consumers, s_node) {
-		if (link->flags == DL_FLAG_SYNC_STATE_ONLY)
-			continue;
+		// if (link->flags == DL_FLAG_SYNC_STATE_ONLY)
+		// 	continue;
 
 		if (link->consumer == target)
 			return 1;
@@ -193,8 +193,8 @@ static int device_reorder_to_tail(struct device *dev, void *not_used)
 
 	device_for_each_child(dev, NULL, device_reorder_to_tail);
 	list_for_each_entry(link, &dev->links.consumers, s_node) {
-		if (link->flags == DL_FLAG_SYNC_STATE_ONLY)
-			continue;
+		// if (link->flags == DL_FLAG_SYNC_STATE_ONLY)
+		// 	continue;
 		device_reorder_to_tail(link->consumer, NULL);
 	}
 
@@ -291,8 +291,8 @@ struct device_link *device_link_add(struct device *consumer,
 
 	if (!consumer || !supplier || flags & ~DL_ADD_VALID_FLAGS ||
 	    (flags & DL_FLAG_STATELESS && flags & DL_MANAGED_LINK_FLAGS) ||
-	    (flags & DL_FLAG_SYNC_STATE_ONLY &&
-	     flags != DL_FLAG_SYNC_STATE_ONLY) ||
+	    // (flags & DL_FLAG_SYNC_STATE_ONLY &&
+	    //  flags != DL_FLAG_SYNC_STATE_ONLY) ||
 	    (flags & DL_FLAG_STATELESS &&
 	     flags & (DL_FLAG_AUTOREMOVE_CONSUMER |
 		      DL_FLAG_AUTOREMOVE_SUPPLIER |
@@ -322,12 +322,19 @@ struct device_link *device_link_add(struct device *consumer,
 	 * SYNC_STATE_ONLY link, we don't check for reverse dependencies
 	 * because it only affects sync_state() callbacks.
 	 */
-	if (!device_pm_initialized(supplier)
-	    || (!(flags & DL_FLAG_SYNC_STATE_ONLY) &&
+	// if (!device_pm_initialized(supplier)
+	//     || (!(flags & DL_FLAG_SYNC_STATE_ONLY) &&
+	// 	  device_is_dependent(consumer, supplier))) {
+	// 	link = NULL;
+	// 	goto out;
+	// }
+
+	if (!device_pm_initialized(supplier) &&
 		  device_is_dependent(consumer, supplier))) {
 		link = NULL;
 		goto out;
 	}
+
 
 	/*
 	 * DL_FLAG_AUTOREMOVE_SUPPLIER indicates that the link will be needed
@@ -676,7 +683,7 @@ int device_links_check_suppliers(struct device *dev)
 	list_for_each_entry(link, &dev->links.suppliers, c_node) {
 		if (!(link->flags & DL_FLAG_MANAGED))
 		if (link->flags & DL_FLAG_STATELESS ||
-		    link->flags & DL_FLAG_SYNC_STATE_ONLY)
+		    // link->flags & DL_FLAG_SYNC_STATE_ONLY)
 			continue;
 
 		if (link->status != DL_STATE_AVAILABLE) {
@@ -1075,7 +1082,7 @@ void device_links_unbind_consumers(struct device *dev)
 
 		if (!(link->flags & DL_FLAG_MANAGED))
 		if (link->flags & DL_FLAG_STATELESS ||
-		    link->flags & DL_FLAG_SYNC_STATE_ONLY)
+		    // link->flags & DL_FLAG_SYNC_STATE_ONLY)
 			continue;
 
 		status = link->status;
