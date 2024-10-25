@@ -330,7 +330,7 @@ struct device_link *device_link_add(struct device *consumer,
 	// }
 
 	if (!device_pm_initialized(supplier) &&
-		  device_is_dependent(consumer, supplier))) {
+		  device_is_dependent(consumer, supplier)) {
 		link = NULL;
 		goto out;
 	}
@@ -681,9 +681,13 @@ int device_links_check_suppliers(struct device *dev)
 	device_links_write_lock();
 
 	list_for_each_entry(link, &dev->links.suppliers, c_node) {
+		// if (!(link->flags & DL_FLAG_MANAGED))
+		// if (link->flags & DL_FLAG_STATELESS ||
+		// 	link->flags & DL_FLAG_SYNC_STATE_ONLY)
+		// 	continue;
+
 		if (!(link->flags & DL_FLAG_MANAGED))
-		if (link->flags & DL_FLAG_STATELESS ||
-		    // link->flags & DL_FLAG_SYNC_STATE_ONLY)
+		if (link->flags & DL_FLAG_STATELESS
 			continue;
 
 		if (link->status != DL_STATE_AVAILABLE) {
@@ -1080,10 +1084,15 @@ void device_links_unbind_consumers(struct device *dev)
 	list_for_each_entry(link, &dev->links.consumers, s_node) {
 		enum device_link_state status;
 
+		// if (!(link->flags & DL_FLAG_MANAGED))
+		// if (link->flags & DL_FLAG_STATELESS ||
+		// 	link->flags & DL_FLAG_SYNC_STATE_ONLY)
+		// 	continue;
+
 		if (!(link->flags & DL_FLAG_MANAGED))
 		if (link->flags & DL_FLAG_STATELESS ||
-		    // link->flags & DL_FLAG_SYNC_STATE_ONLY)
 			continue;
+
 
 		status = link->status;
 		if (status == DL_STATE_CONSUMER_PROBE) {
