@@ -1,4 +1,8 @@
 {
+    "files.associations": {
+        "security.h": "c"
+    }
+}{
     "[markdown]": {
         "editor.quickSuggestions": {
           "other": true,
