@@ -1,4 +1,4 @@
-<img src="https://avatars.githubusercontent.com/u/186985698?s=200&v=4" alt="icon" style="height: 70px; float: left; margin: 0 10px 0" align="left" > <h1 style="margin: -1px 0 0">Mizumo Project</h1>
+<img src="https://avatars.githubusercontent.com/u/186985698?s=200&v=4" alt="icon" style="height: 70px; float: left; margin: 0 10px 0" align="left" > <h1 style="margin: -3px 0 0">Mizumo Project</h1>
 Android Kernel under Mizumo Project
 
 ![img](.github/img/mizkernel-a12s-banner.png)
