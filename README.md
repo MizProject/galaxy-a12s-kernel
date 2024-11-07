@@ -35,4 +35,4 @@ Branches and their versions:
 | testing-release                                           | 4.19.111 |
 | upstream-slmk                                             | 4.19.198 |
 | recovery-kernel                                           | 4.19.111 |
-
+main-ksu                                           | 4.19.111 |
