@@ -321,6 +321,8 @@ include scripts/subarch.include
 # Note: Some architectures assign CROSS_COMPILE in their arch/*/Makefile
 ARCH		?=arm64
 CROSS_COMPILE   ?= $(srctree)/proton/aarch64-linux-gnu/bin/
+# CROSS_COMPILE   ?= $(srctree)/aarch64-linux-android-4.9-llvm/bin/aarch64-linux-android-
+
 
 # Architecture as present in compile.h
 UTS_MACHINE 	:= $(ARCH)
