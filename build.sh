@@ -9,4 +9,4 @@ export ARCH=arm64
 make clean && make mrproper
 # make menuconfig
 make ARCH=arm64 exynos_850_mizlite
-make ARCH=arm64 -j64
+make ARCH=arm64 -j$(nproc --all)
