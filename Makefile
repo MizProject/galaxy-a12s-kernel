@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: GPL-2.0
+# Version Based only on Kernel.org + Android Common Kernel
 VERSION = 4
 PATCHLEVEL = 19
-SUBLEVEL = 111
+SUBLEVEL = 198
 EXTRAVERSION =
 NAME = "People's Front"
 
