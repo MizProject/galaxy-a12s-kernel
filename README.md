@@ -28,7 +28,7 @@ Branches and their versions:
 
 | BRANCH                                                    | VERSION  |
 |-----------------------------------------------------------|----------|
-| main                                                      | 4.19.111 |
+| main                                                      | 4.19.198 |
 | upstream (Kernel.org Patches)                             | 4.19.198 |
 | upstream-ack (Android Common Kernel + Kernel.Org patches) | 4.19.198 |
 | upstream-ksu (using Risuntk's KSU)                        | 4.19.198 |

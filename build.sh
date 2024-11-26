@@ -8,5 +8,5 @@ export ARCH=arm64
 
 make clean && make mrproper
 # make menuconfig
-make ARCH=arm64 exynos850-ack-unstable
+make ARCH=arm64 exynos850-main
 make ARCH=arm64 -j64
