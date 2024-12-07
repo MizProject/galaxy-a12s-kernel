@@ -368,7 +368,14 @@ static void *ion_dma_buf_vmap(struct dma_buf *dmabuf)
 		mutex_unlock(&buffer->lock);
 	}
 
-	return buffer->vaddr;
+	mutex_lock(&buffer->lock);
+	list_for_each_entry(a, &buffer->attachments, list) {
+		dma_sync_sg_for_cpu(a->dev, a->table->sgl, a->table->nents,
+				    direction);
+	}
+	mutex_unlock(&buffer->lock);
+
+	return 0;
 }
 
 static void ion_dma_buf_vunmap(struct dma_buf *dmabuf, void *ptr)
