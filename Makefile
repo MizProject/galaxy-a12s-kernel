@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: GPL-2.0
-# Version Based only on Kernel.org + Android Common Kernel
+# Version Based only on Kernel.org + Android Common Kernel + MizKernel's Modifications
 VERSION = 4
 PATCHLEVEL = 19
 SUBLEVEL = 198
 EXTRAVERSION =
-NAME = "People's Front"
+NAME = "Ad Astra Abyssosque"
 
 # *DOCUMENTATION*
 # To see a list of typical targets execute "make help"
